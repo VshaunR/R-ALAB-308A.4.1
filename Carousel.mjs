@@ -1,7 +1,7 @@
 
-import { favourite } from "./index.mjs";
+import  favourite  from "./index.js";
 
- function createCarouselItem(imgSrc, imgAlt, imgId) {
+export function createCarouselItem(imgSrc, imgAlt, imgId) {
   const template = document.querySelector("#carouselItemTemplate");
   const clone = template.content.firstElementChild.cloneNode(true);
 
@@ -17,14 +17,14 @@ import { favourite } from "./index.mjs";
   return clone;
 }
 
- function clear() {
+export function clear() {
   const carousel = document.querySelector("#carouselInner");
   while (carousel.firstChild) {
     carousel.removeChild(carousel.firstChild);
   }
 }
 
- function appendCarousel(element) {
+export function appendCarousel(element) {
   const carousel = document.querySelector("#carouselInner");
 
   const activeItem = document.querySelector(".carousel-item.active");
@@ -33,7 +33,7 @@ import { favourite } from "./index.mjs";
   carousel.appendChild(element);
 }
 
- function start() {
+export function start() {
   const multipleCardCarousel = document.querySelector(
     "#carouselExampleControls"
   );
@@ -74,5 +74,3 @@ import { favourite } from "./index.mjs";
     $(multipleCardCarousel).addClass("slide");
   }
 }
-
-export {createCarouselItem,clear,appendCarousel,start}
