@@ -1,6 +1,6 @@
 import * as Carousel from "./Carousel.mjs";
 
-
+console.log('ok?')
 // The breed selection input element.
 const breedSelect = document.getElementById("breedSelect");
 // The information section div element.
@@ -21,7 +21,7 @@ const API_KEY = "live_rvhz0KL0IJqA1gMZnOQQHSwWRw191QTWFCz9kgogZ2xQ2w4Z1R2nEeNvMW
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
-console.log('yeeyyeyeye')
+
 async function initialLoad(){
   
 }
