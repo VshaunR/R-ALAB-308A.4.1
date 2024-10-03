@@ -1,6 +1,5 @@
 import * as Carousel from "./Carousel.mjs";
 
-console.log('ok?')
 // The breed selection input element.
 const breedSelect = document.getElementById("breedSelect");
 // The information section div element.
@@ -13,6 +12,7 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 // Step 0: Store your API key here for reference and easy access.
 const API_KEY = "live_rvhz0KL0IJqA1gMZnOQQHSwWRw191QTWFCz9kgogZ2xQ2w4Z1R2nEeNvMWq5T7Qo";
 
+
 /**
  * 1. Create an async function "initialLoad" that does the following:
  * - Retrieve a list of breeds from the cat API using fetch().
@@ -21,9 +21,64 @@ const API_KEY = "live_rvhz0KL0IJqA1gMZnOQQHSwWRw191QTWFCz9kgogZ2xQ2w4Z1R2nEeNvMW
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
-
+initialLoad()
 async function initialLoad(){
   
+  const url = `https://api.thecatapi.com/v1/breeds`;
+  const response = await fetch(`${url}`,{
+    headers:{
+      'x-api-key':API_KEY
+    }
+  })
+  const data = await response.json();
+  let id;
+  data.forEach((kityo)=>{
+
+    let option = document.createElement('option');
+    option.setAttribute('id',kityo.id)
+    option.textContent = kityo.name;
+    breedSelect.appendChild(option)
+    // console.log(kityo)
+    
+  
+   
+    id=kityo.id
+
+  });
+
+  handleBreed(id)
+
+ 
+};
+
+
+
+
+async function handleBreed(id){
+ 
+ breedSelect.addEventListener('click',async(e)=>{
+ 
+  const response = await fetch(`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${id}`,{
+    headers:{
+      'x-api-key':API_KEY,
+
+    }
+  });
+  const data = await response.json()
+
+  data.forEach((kityo)=>{
+    console.log(kityo);
+
+    let html = Carousel.createCarouselItem(kityo.url,'cat',kityo.id);
+   Carousel.start()
+ 
+    Carousel.appendCarousel(html)
+  
+   
+  })
+  
+ });
+
 }
 
 
@@ -33,6 +88,11 @@ async function initialLoad(){
  *  - Make sure your request is receiving multiple array items!
  *  - Check the API documentation if you're only getting a single object.
  * - For each object in the response array, create a new element for the carousel.
+ * 
+ * 
+ * 
+ * 
+ * 
  *  - Append each of these new elements to the carousel.
  * - Use the other data you have been given to create an informational section within the infoDump element.
  *  - Be creative with how you create DOM elements and HTML.
