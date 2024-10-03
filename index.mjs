@@ -87,6 +87,8 @@ const API_KEY = "live_rvhz0KL0IJqA1gMZnOQQHSwWRw191QTWFCz9kgogZ2xQ2w4Z1R2nEeNvMW
 
 //FETCH ENDS HERE
 
+
+//AXIOS BEGINS BELOW
 initialLoad()
 async function initialLoad(){
   
@@ -104,7 +106,7 @@ async function initialLoad(){
     let option = document.createElement('option');
     option.setAttribute('value',kityo.id)
     option.textContent = kityo.name;
-  
+    // console.log(kityo)
     breedSelect.appendChild(option)
   
 
@@ -116,9 +118,10 @@ async function initialLoad(){
     e.preventDefault();
     // console.log(breedSelect.value)
      await handleBreed(breedSelect.value)
+ 
       });
 
-
+      
 
   }catch(err){
     console.error(err)
@@ -141,6 +144,8 @@ async function initialLoad(){
       'Content-Type':'application/json',
       'x-api-key':API_KEY,
 
+    }, onDownloadProgress: function (progressEvent) {
+      updateProgess(progressEvent)
     }
   });
   //interceptor helper function
@@ -148,10 +153,10 @@ async function initialLoad(){
   const data = await response.data
   Carousel.clear();
   data.forEach((kityo)=>{
-    console.log(kityo);
+    // console.log(kityo);
 
     let html = Carousel.createCarouselItem(kityo.url,'cat',kityo.id);
-
+    favourite(kityo.id)
    Carousel.start()
  
     Carousel.appendCarousel(html)
@@ -176,12 +181,15 @@ async function initialLoad(){
 let start;
 async function intercept(){
 axios.interceptors.request.use(request=>{
+  //progress bar
+  progressBar.style.width =`0%`;
+  // document.getElementsByName('body').style.cursor=`progress`;
   start = new Date().getTime();
   return request;
 })
 
   axios.interceptors.response.use(response=>{
-
+    // document.getElementsByName('body').style.cursor=`default`;
     console.log('Sucessful GET!');
     let end = new Date().getTime();
     console.log(end-start)
@@ -196,48 +204,37 @@ axios.interceptors.request.use(request=>{
 
 }
 
+async function updateProgess(ProgressEvent){
+console.log(ProgressEvent)
+}
 
-/**
- * 5. Add axios interceptors to log the time between request and response to the console.
- * - Hint: you already have access to code that does this!
- * - Add a console.log statement to indicate when requests begin.
- * - As an added challenge, try to do this on your own without referencing the lesson material.
- */
 
-/**
- * 6. Next, we'll create a progress bar to indicate the request is in progress.
- * - The progressBar element has already been created for you.
- *  - You need only to modify its "width" style property to align with the request progress.
- * - In your request interceptor, set the width of the progressBar element to 0%.
- *  - This is to reset the progress with each request.
- * - Research the axios onDownloadProgress config option.
- * - Create a function "updateProgress" that receives a ProgressEvent object.
- *  - Pass this function to the axios onDownloadProgress config option in your event handler.
- * - console.log your ProgressEvent object within updateProgess, and familiarize yourself with its structure.
- *  - Update the progress of the request using the properties you are given.
- * - Note that we are not downloading a lot of data, so onDownloadProgress will likely only fire
- *   once or twice per request to this API. This is still a concept worth familiarizing yourself
- *   with for future projects.
- */
 
-/**
- * 7. As a final element of progress indication, add the following to your axios interceptors:
- * - In your request interceptor, set the body element's cursor style to "progress."
- * - In your response interceptor, remove the progress cursor style from the body element.
- */
-/**
- * 8. To practice posting data, we'll create a system to "favourite" certain images.
- * - The skeleton of this function has already been created for you.
- * - This function is used within Carousel.js to add the event listener as items are created.
- *  - This is why we use the export keyword for this function.
- * - Post to the cat API's favourites endpoint with the given ID.
- * - The API documentation gives examples of this functionality using fetch(); use Axios!
- * - Add additional logic to this function such that if the image is already favourited,
- *   you delete that favourite using the API, giving this function "toggle" functionality.
- * - You can call this function by clicking on the heart at the top right of any image.
- */
+
+
 export async function favourite(imgId) {
   // your code here
+  try{
+   
+ let response =   await axios({
+      methood:'post',
+      url:`https://api.thecatapi.com/v1/favourites/`,
+      headers:{
+        
+        'x-api-key':API_KEY,
+      },
+      data:{
+        
+          "image_id":imgId
+        
+  
+    }})
+ 
+//  console.log(response.data)
+
+  }catch(err){
+    console.error(err)
+  }
 }
 
 /**
@@ -250,10 +247,3 @@ export async function favourite(imgId) {
  *    repeat yourself in this section.
  */
 
-/**
- * 10. Test your site, thoroughly!
- * - What happens when you try to load the Malayan breed?
- *  - If this is working, good job! If not, look for the reason why and fix it!
- * - Test other breeds as well. Not every breed has the same data available, so
- *   your code should account for this.
- */
