@@ -65,13 +65,19 @@ async function initialLoad(){
   const data = await response.json()
   Carousel.clear();
   data.forEach((kityo)=>{
-    // console.log(kityo);
+    console.log(kityo);
 
     let html = Carousel.createCarouselItem(kityo.url,'cat',kityo.id);
    Carousel.start()
  
     Carousel.appendCarousel(html)
-
+    infoDump.innerHTML = `<div>
+      <p>Name: ${kityo.breeds[0].name}</p>
+      <p>Height: ${kityo.height}</p>
+      <p>Width: ${kityo.width}</p>
+    
+    
+    </div>`
 
   })
 
