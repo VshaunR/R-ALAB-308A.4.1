@@ -12,18 +12,91 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 const API_KEY = "live_rvhz0KL0IJqA1gMZnOQQHSwWRw191QTWFCz9kgogZ2xQ2w4Z1R2nEeNvMWq5T7Qo";
 
+/// USING FETCH ONLY HERE
+// initialLoad()
+// async function initialLoad(){
+  
+//   const url = `https://api.thecatapi.com/v1/breeds`;
+//   const response = await fetch(`${url}`,{
+//     headers:{
+//       'Content-Type':'application/json',
+//       'x-api-key':API_KEY
+//     }
+//   })
+//   const data = await response.json();
+
+  
+//   data.forEach((kityo)=>{
+//     // Carousel.clear()
+//     let option = document.createElement('option');
+//     option.setAttribute('value',kityo.id)
+//     option.textContent = kityo.name;
+  
+//     breedSelect.appendChild(option)
+  
+
+
+//   });
+ 
+
+//   breedSelect.addEventListener('click',async (e)=>{
+//     e.preventDefault();
+//     // console.log(breedSelect.value)
+//      await handleBreed(breedSelect.value)
+//       });
+ 
+// };
+
+
+
+
+//  async function handleBreed(id){
+ 
+//   console.log(id)
+ 
+
+//   const response = await fetch(`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${id}`,{
+//     headers:{
+//       'Content-Type':'application/json',
+//       'x-api-key':API_KEY,
+
+//     }
+//   });
+//   const data = await response.json()
+//   Carousel.clear();
+//   data.forEach((kityo)=>{
+//     console.log(kityo);
+
+//     let html = Carousel.createCarouselItem(kityo.url,'cat',kityo.id);
+//    Carousel.start()
+ 
+//     Carousel.appendCarousel(html)
+//     infoDump.innerHTML = `<div>
+//       <p>Name: ${kityo.breeds[0].name}</p>
+//       <p>Height: ${kityo.height}</p>
+//       <p>Width: ${kityo.width}</p>
+    
+    
+//     </div>`
+
+//   })
+
+
+
+// };
+
+//FETCH ENDS HERE
 
 initialLoad()
 async function initialLoad(){
   
+  try{
+
+
   const url = `https://api.thecatapi.com/v1/breeds`;
-  const response = await fetch(`${url}`,{
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key':API_KEY
-    }
-  })
-  const data = await response.json();
+  //using axios
+  const response = await axios.get(`${url}`)
+  const data = await response.data;
 
   
   data.forEach((kityo)=>{
@@ -44,6 +117,12 @@ async function initialLoad(){
     // console.log(breedSelect.value)
      await handleBreed(breedSelect.value)
       });
+
+
+
+  }catch(err){
+    console.error(err)
+  }
  
 };
 
@@ -52,22 +131,27 @@ async function initialLoad(){
 
  async function handleBreed(id){
  
+ try{
+
   console.log(id)
  
-
-  const response = await fetch(`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${id}`,{
+//using axios
+  const response = await axios.get(`https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${id}`,{
     headers:{
       'Content-Type':'application/json',
       'x-api-key':API_KEY,
 
     }
   });
-  const data = await response.json()
+  //interceptor helper function
+  intercept()
+  const data = await response.data
   Carousel.clear();
   data.forEach((kityo)=>{
     console.log(kityo);
 
     let html = Carousel.createCarouselItem(kityo.url,'cat',kityo.id);
+
    Carousel.start()
  
     Carousel.appendCarousel(html)
@@ -83,22 +167,36 @@ async function initialLoad(){
 
 
 
+ }catch(err){console.error(err)}
+
+
+};
+
+
+let start;
+async function intercept(){
+axios.interceptors.request.use(request=>{
+  start = new Date().getTime();
+  return request;
+})
+
+  axios.interceptors.response.use(response=>{
+
+    console.log('Sucessful GET!');
+    let end = new Date().getTime();
+    console.log(end-start)
+    return response;
+
+
+  },(err)=>{
+  console.error(err)
+  
+  });
+
+
 }
 
 
-
-/**
- * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
- */
-/**
- * 4. Change all of your fetch() functions to axios!
- * - axios has already been imported for you within index.js.
- * - If you've done everything correctly up to this point, this should be simple.
- * - If it is not simple, take a moment to re-evaluate your original code.
- * - Hint: Axios has the ability to set default headers. Use this to your advantage
- *   by setting a default header with your API key so that you do not have to
- *   send it manually with all of your requests! You can also set a default base URL!
- */
 /**
  * 5. Add axios interceptors to log the time between request and response to the console.
  * - Hint: you already have access to code that does this!
